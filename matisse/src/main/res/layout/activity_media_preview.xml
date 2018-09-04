@@ -35,6 +35,7 @@
         tools:targetApi="lollipop">
 
         <TextView
+            android:fontFamily="@font/muli_bold"
             android:id="@+id/button_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,6 +75,7 @@
                     android:layout_height="16dp" />
 
                 <TextView
+                    android:fontFamily="@font/muli_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -89,6 +91,7 @@
 
 
             <TextView
+                android:fontFamily="@font/muli_bold"
                 android:id="@+id/size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,6 +104,7 @@
 
 
         <TextView
+            android:fontFamily="@font/muli_bold"
             android:id="@+id/button_apply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
