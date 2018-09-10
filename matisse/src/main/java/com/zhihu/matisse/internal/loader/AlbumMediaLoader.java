@@ -188,7 +188,7 @@ public class AlbumMediaLoader extends CursorLoader {
 
     public static Cursor queryInInternal(Context context, String path) {
         return context.getContentResolver()
-                .query(QUERY_URI_INTERNAL, PROJECTION,
+                .query(null, PROJECTION,
                         MediaStore.Files.FileColumns.DATA + "=?",
                         new String[]{path},
                         ORDER_BY);
