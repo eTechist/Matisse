@@ -160,7 +160,7 @@ public class AlbumMediaLoader extends CursorLoader {
     public static ArrayList<Item> selectedList(Context context, List<String> paths) {
         ArrayList<Item> list = new ArrayList<>(paths.size());
         for (String path : paths) {
-            Cursor cursor = queryInInternal(context, path);
+            Cursor cursor = queryInExternal(context, path);
             if (cursor != null && cursor.moveToNext()) {
                 Item item = Item.valueOf(cursor);
                 list.add(item);
