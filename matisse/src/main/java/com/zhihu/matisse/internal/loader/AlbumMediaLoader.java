@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class AlbumMediaLoader extends CursorLoader {
     private static final Uri QUERY_URI_EXTERNAL = MediaStore.Files.getContentUri("external");
-    private static final Uri QUERY_URI_INTERNAL = MediaStore.Files.getContentUri("internal");
+    private static final Uri QUERY_URI_INTERNAL = MediaStore.Files.getContentUri(null);
     private static final String[] PROJECTION = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.MediaColumns.DISPLAY_NAME,
