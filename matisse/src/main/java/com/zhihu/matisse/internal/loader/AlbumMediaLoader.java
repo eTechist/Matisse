@@ -29,6 +29,7 @@ import com.zhihu.matisse.internal.entity.Item;
 import com.zhihu.matisse.internal.entity.SelectionSpec;
 import com.zhihu.matisse.internal.utils.MediaStoreCompat;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,8 @@ import java.util.List;
  * Load images and videos into a single cursor.
  */
 public class AlbumMediaLoader extends CursorLoader {
-    private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
+    private static final Uri QUERY_URI_EXTERNAL = MediaStore.Files.getContentUri("external");
+    private static final Uri QUERY_URI_INTERNAL = MediaStore.Files.getContentUri("internal");
     private static final String[] PROJECTION = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.MediaColumns.DISPLAY_NAME,
@@ -100,7 +102,7 @@ public class AlbumMediaLoader extends CursorLoader {
     private final boolean mEnableCapture;
 
     private AlbumMediaLoader(Context context, String selection, String[] selectionArgs, boolean capture) {
-        super(context, QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
+        super(context, QUERY_URI_EXTERNAL, PROJECTION, selection, selectionArgs, ORDER_BY);
         mEnableCapture = capture;
     }
 
@@ -158,7 +160,7 @@ public class AlbumMediaLoader extends CursorLoader {
     public static ArrayList<Item> selectedList(Context context, List<String> paths) {
         ArrayList<Item> list = new ArrayList<>(paths.size());
         for (String path : paths) {
-            Cursor cursor = query(context, path);
+            Cursor cursor = queryInStorage(context, path);
             if (cursor != null && cursor.moveToNext()) {
                 Item item = Item.valueOf(cursor);
                 list.add(item);
@@ -168,12 +170,26 @@ public class AlbumMediaLoader extends CursorLoader {
         return list;
     }
 
-    private static Cursor query(Context context, String path) {
-        return context.getContentResolver()
-                .query(QUERY_URI, PROJECTION,
-                        MediaStore.Files.FileColumns.DATA + "=?",
-                        new String[]{path},
-                        ORDER_BY);
+    public static Cursor queryInStorage(Context context, String path) {
+
+        Uri contentUri= Uri.fromFile(new File(path));
+
+        Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
+
+        if(contentUri.getPath().startsWith("/external/image")) {
+            cursor = context.getContentResolver()
+                    .query(QUERY_URI_EXTERNAL, PROJECTION,
+                            MediaStore.Files.FileColumns.DATA + "=?",
+                            new String[]{path},
+                            ORDER_BY);
+        } else if (contentUri.getPath().startsWith("/internal/image")) {
+            cursor = context.getContentResolver()
+                    .query(QUERY_URI_INTERNAL, PROJECTION,
+                            MediaStore.Files.FileColumns.DATA + "=?",
+                            new String[]{path},
+                            ORDER_BY);
+        }
+        return cursor;
     }
 
 }
