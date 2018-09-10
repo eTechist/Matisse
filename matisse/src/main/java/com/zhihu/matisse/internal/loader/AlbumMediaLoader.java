@@ -160,36 +160,64 @@ public class AlbumMediaLoader extends CursorLoader {
     public static ArrayList<Item> selectedList(Context context, List<String> paths) {
         ArrayList<Item> list = new ArrayList<>(paths.size());
         for (String path : paths) {
-            Cursor cursor = queryInStorage(context, path);
+            Cursor cursor = queryInInternal(context, path);
             if (cursor != null && cursor.moveToNext()) {
                 Item item = Item.valueOf(cursor);
                 list.add(item);
                 cursor.close();
+            } else {
+                cursor = queryInInternal(context, path);
+                if (cursor != null && cursor.moveToNext()) {
+                    Item item = Item.valueOf(cursor);
+                    list.add(item);
+                    cursor.close();
+                }
             }
         }
         return list;
+    }
+
+    public static Cursor queryInExternal(Context context, String path) {
+        return context.getContentResolver()
+                .query(QUERY_URI_EXTERNAL, PROJECTION,
+                        MediaStore.Files.FileColumns.DATA + "=?",
+                        new String[]{path},
+                        ORDER_BY);
+
+    }
+
+    public static Cursor queryInInternal(Context context, String path) {
+        return context.getContentResolver()
+                .query(QUERY_URI_EXTERNAL, PROJECTION,
+                        MediaStore.Files.FileColumns.DATA + "=?",
+                        new String[]{path},
+                        ORDER_BY);
+
     }
 
     public static Cursor queryInStorage(Context context, String path) {
 
         Uri contentUri= Uri.fromFile(new File(path));
 
-        Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
-
         if(contentUri.getPath().startsWith("/external/image")) {
-            cursor = context.getContentResolver()
+            return context.getContentResolver()
                     .query(QUERY_URI_EXTERNAL, PROJECTION,
                             MediaStore.Files.FileColumns.DATA + "=?",
                             new String[]{path},
                             ORDER_BY);
         } else if (contentUri.getPath().startsWith("/internal/image")) {
-            cursor = context.getContentResolver()
+            return context.getContentResolver()
                     .query(QUERY_URI_INTERNAL, PROJECTION,
                             MediaStore.Files.FileColumns.DATA + "=?",
                             new String[]{path},
                             ORDER_BY);
-        }
-        return cursor;
-    }
+        } else {
+            return context.getContentResolver()
+                    .query(QUERY_URI_EXTERNAL, PROJECTION,
+                            MediaStore.Files.FileColumns.DATA + "=?",
+                            new String[]{path},
+                            ORDER_BY);
 
+        }
+    }
 }
