@@ -349,7 +349,7 @@ public final class SelectionCreator {
      * @param requestCode Identity of the request Activity or Fragment.
      * @param selectedPaths The selected Media path collection
      */
-    public void forResult(int requestCode, List<Uri> selectedPaths) {
+    public void forResult(int requestCode, List<String> selectedPaths) {
 
         Activity activity = mMatisse.getActivity();
 
