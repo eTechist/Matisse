@@ -155,7 +155,7 @@ public class AlbumMediaLoader extends CursorLoader {
         // FIXME a dirty way to fix loading multiple times
     }
 
-    public static ArrayList<Item> selectedList(Context context, List<String> paths) {
+    public static ArrayList<Item> selectedList(Context context,List<String> paths,List<String> uris) {
         ArrayList<Item> list = new ArrayList<>(paths.size());
         for (String path : paths) {
             Cursor cursor = query(context, path);
@@ -165,7 +165,15 @@ public class AlbumMediaLoader extends CursorLoader {
                 cursor.close();
             }
         }
-        return list;
+        ArrayList<Item> orderedList = new ArrayList<>();
+        for (String uri : uris) {
+            for (Item item : list) {
+                if (uri.equalsIgnoreCase(item.uri.toString())) {
+                    orderedList.add(item);
+                }
+            }
+        }
+        return orderedList;
     }
 
     private static Cursor query(Context context, String path) {
