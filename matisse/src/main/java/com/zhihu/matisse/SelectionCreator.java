@@ -18,9 +18,7 @@ package com.zhihu.matisse;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -288,7 +286,7 @@ public final class SelectionCreator {
      * @param scale Thumbnail's scale in (0.0, 1.0]. Default value is 0.5.
      * @return {@link SelectionCreator} for fluent API.
      */
-    public SelectionCreator thumbnailScale(@FloatRange(from = 0, to = 1.0f, fromInclusive = false) float scale) {
+    public SelectionCreator thumbnailScale(float scale) {
         if (scale <= 0f || scale > 1f)
             throw new IllegalArgumentException("Thumbnail scale must be between (0.0, 1.0]");
         mSelectionSpec.thumbnailScale = scale;
@@ -349,7 +347,7 @@ public final class SelectionCreator {
      * @param requestCode Identity of the request Activity or Fragment.
      * @param selectedPaths The selected Media path collection
      */
-    public void forResult(int requestCode, List<Uri> selectedPaths) {
+    public void forResult(int requestCode, List<String> selectedPaths) {
 
         Activity activity = mMatisse.getActivity();
 
@@ -360,7 +358,7 @@ public final class SelectionCreator {
         Intent intent = new Intent(activity, MatisseActivity.class);
 
         if (selectedPaths != null && selectedPaths.size() > 0) {
-            intent.putParcelableArrayListExtra(SelectedItemCollection.STATE_SELECTION, AlbumMediaLoader.querySelection(activity,selectedPaths));
+            intent.putParcelableArrayListExtra(SelectedItemCollection.STATE_SELECTION, AlbumMediaLoader.selectedList(activity,selectedPaths));
         }
 
         Fragment fragment = mMatisse.getFragment();

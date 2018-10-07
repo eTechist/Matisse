@@ -16,7 +16,6 @@
  */
 package com.zhihu.matisse.internal.loader;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -156,24 +155,25 @@ public class AlbumMediaLoader extends CursorLoader {
         // FIXME a dirty way to fix loading multiple times
     }
 
-    public static ArrayList<Item> querySelection(Context context, List<Uri> uris) {
-        ArrayList<Item> list = new ArrayList<>(uris.size());
-        for (Uri uri : uris) {
-            Cursor query = query(context, uri);
-            if (query != null && query.moveToNext()) {
-                Item item = Item.valueOf(query);
+    public static ArrayList<Item> selectedList(Context context, List<String> paths) {
+        ArrayList<Item> list = new ArrayList<>(paths.size());
+        for (String path : paths) {
+            Cursor cursor = query(context, path);
+            if (cursor != null && cursor.moveToNext()) {
+                Item item = Item.valueOf(cursor);
                 list.add(item);
-                query.close();
+                cursor.close();
             }
         }
         return list;
     }
-    
-    private static Cursor query(Context context, Uri uri) {
+
+    private static Cursor query(Context context, String path) {
         return context.getContentResolver()
                 .query(QUERY_URI, PROJECTION,
-                        MediaStore.Files.FileColumns._ID + "=?",
-                        new String[]{String.valueOf(ContentUris.parseId(uri))},
+                        MediaStore.Files.FileColumns.DATA + "=?",
+                        new String[]{path},
                         ORDER_BY);
     }
+
 }
