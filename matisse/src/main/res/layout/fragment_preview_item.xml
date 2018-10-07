@@ -21,10 +21,7 @@
     <it.sephiroth.android.library.imagezoom.ImageViewTouch
         android:id="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_gravity="center"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
     <ImageView
         android:fontFamily="@font/muli_bold"
